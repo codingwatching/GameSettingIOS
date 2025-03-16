@@ -53,6 +53,11 @@ public class GameSettingsEditor : EditorWindow
             CreateFolderAndFile();
         }
         
+        if(GUILayout.Button("Get Info"))
+        {
+           GetInfoGame();
+        }
+        
         GUILayout.Space(10);
         // Icon selection
         GUILayout.Label("Game Icon:");
@@ -67,12 +72,10 @@ public class GameSettingsEditor : EditorWindow
         // Company Name input
         GUILayout.Label("Company Name:");
         companyName = EditorGUILayout.TextField(companyName);
-        PlayerSettings.companyName = companyName;
 
         // Game Name input
         GUILayout.Label("Game Name:");
         gameName = EditorGUILayout.TextField(gameName);
-        PlayerSettings.productName = gameName;
 
         string packageName = $"com.{companyName}.{gameName}".ToLower();
         GUILayout.Label("Package Name: " + packageName);
@@ -129,6 +132,17 @@ public class GameSettingsEditor : EditorWindow
             OpenPathBuild();
         }
     }
+    
+    private void GetInfoGame()
+    {
+        gameIcon = PlayerSettings.GetIconsForTargetGroup(BuildTargetGroup.Unknown)[0];
+        companyName = PlayerSettings.companyName;
+        gameName = PlayerSettings.productName;
+        gameDescription = File.ReadAllText(desInfoGamePath);
+        isLandscape = PlayerSettings.defaultInterfaceOrientation == UIOrientation.LandscapeLeft;
+        managedStrippingLevel = PlayerSettings.GetManagedStrippingLevel(BuildTargetGroup.iOS);
+        Debug.Log("Get Info Game Success");
+    }
 
     
     private void CreateFolderAndFile()
@@ -157,6 +171,9 @@ public class GameSettingsEditor : EditorWindow
     
     private void ApplySettings(string packageName)
     {
+        PlayerSettings.companyName = companyName;
+        PlayerSettings.productName = gameName;
+        
         PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.Android, packageName);
         PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.iOS, packageName);
 
