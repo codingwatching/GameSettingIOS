@@ -48,15 +48,9 @@ public class GameSettingsEditor : EditorWindow
     private void OnGUI()
     {
         GUILayout.Label("Game Settings", EditorStyles.boldLabel);
-        if(GUILayout.Button("Create Folder And File"))
-        {
-            CreateFolderAndFile();
-        }
-        
-        if(GUILayout.Button("Get Info"))
-        {
-           GetInfoGame();
-        }
+        if(GUILayout.Button("Create Folder And File"))  CreateFolderAndFile();
+        if(GUILayout.Button("Get Info")) GetInfoGame();
+        if(GUILayout.Button("Open Player Settings")) OpenPlayerSettings();
         
         GUILayout.Space(10);
         // Icon selection
@@ -135,15 +129,25 @@ public class GameSettingsEditor : EditorWindow
     
     private void GetInfoGame()
     {
-        gameIcon = PlayerSettings.GetIconsForTargetGroup(BuildTargetGroup.Unknown)[0];
-        companyName = PlayerSettings.companyName;
-        gameName = PlayerSettings.productName;
-        gameDescription = File.ReadAllText(desInfoGamePath);
+        if(PlayerSettings.GetIconsForTargetGroup(BuildTargetGroup.Unknown).Length > 0)
+            gameIcon = PlayerSettings.GetIconsForTargetGroup(BuildTargetGroup.Unknown)[0];
+        if(PlayerSettings.companyName != "")
+            companyName = PlayerSettings.companyName;
+        if(PlayerSettings.productName != "")
+            gameName = PlayerSettings.productName;
+        
+        if(File.ReadAllText(desInfoGamePath) != "")
+            gameDescription = File.ReadAllText(desInfoGamePath);
         isLandscape = PlayerSettings.defaultInterfaceOrientation == UIOrientation.LandscapeLeft;
         managedStrippingLevel = PlayerSettings.GetManagedStrippingLevel(BuildTargetGroup.iOS);
         Debug.Log("Get Info Game Success");
     }
 
+    private void OpenPlayerSettings()
+    {
+       // ExecuteMenuItem failed because there is no menu named 'Edit/Project Settings/Player'
+       SettingsService.OpenProjectSettings("Project/Player");
+    }
     
     private void CreateFolderAndFile()
     {
