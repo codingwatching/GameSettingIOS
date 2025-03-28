@@ -8,22 +8,7 @@ using UnityEngine;
 public class CaptureSceenGame : MonoBehaviour
 {
     public bool isCapturePortrait = false;
-
-
-    // void Update()
-    // {
-    //     if (Input.GetKeyDown(KeyCode.Space))
-    //     { // capture screen shot on space key down
-    //         CaptureScreenshots();
-    //     }
-    //     else
-    //     {
-    //         if (Input.GetKeyDown(KeyCode.M))
-    //         {
-    //             CaptureIcon();
-    //         }
-    //     }
-    // }
+ 
 
     [ContextMenu("CaptureIcon")]
     public void CaptureIcon()
@@ -64,16 +49,7 @@ public class CaptureSceenGame : MonoBehaviour
             System.IO.Directory.CreateDirectory(folderPath); // it will get created
 
 #if UNITY_IOS
-        if (isCapturePortrait)
-        {
-            CaptureScreenshot(folderPath, "Portrait", 1242, 2688);
-            CaptureScreenshot(folderPath, "Portrait", 1242, 2208);
-        }
-        else
-        {
-            CaptureScreenshot(folderPath, "Landscape", 2688, 1242);
-            CaptureScreenshot(folderPath, "Landscape", 2208, 1242);
-        }
+        StartCoroutine(IECaptureScreenshot(folderPath));
 #else
         if (isCapturePortrait)
         {
@@ -84,17 +60,24 @@ public class CaptureSceenGame : MonoBehaviour
             CaptureScreenshot(folderPath, "Landscape", 1920, 1080);
         }
 #endif
-        // else
-        // {
-        //     var screenshotName =
-        //                         "Screenshot_" +
-        //                         System.DateTime.Now.ToString("dd-MM-yyyy-HH-mm-ss") + // puts the current time right into the screenshot name
-        //                         ".png"; // put your favorite data format here
-        //
-        //     ScreenCapture.CaptureScreenshot(System.IO.Path.Combine(folderPath, screenshotName), 1); // takes the screenshot
-        //     AssetDatabase.Refresh();
-        //     Debug.Log("Capture Screenshot Name " + screenshotName);
-        // }
+    }
+
+    private IEnumerator IECaptureScreenshot(string folderPath)
+    {
+        if (isCapturePortrait)
+        {
+            CaptureScreenshot(folderPath, "Portrait", 1242, 2688);
+            yield return new WaitForEndOfFrame();
+            CaptureScreenshot(folderPath, "Portrait", 1242, 2208);
+            yield return new WaitForEndOfFrame();
+        }
+        else
+        {
+            yield return new WaitForEndOfFrame();
+            CaptureScreenshot(folderPath, "Landscape", 2688, 1242);
+            yield return new WaitForEndOfFrame();
+            CaptureScreenshot(folderPath, "Landscape", 2208, 1242);
+        }
     }
 
     void CaptureScreenshot(string folderPath, string resolutionName, int width, int height)
