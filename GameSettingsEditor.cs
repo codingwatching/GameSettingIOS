@@ -4,6 +4,9 @@ using UnityEngine;
 using System.IO;
 using System.Linq;
 using UnityEditor.Build;
+using System.IO.Compression;
+using CompressionLevel = System.IO.Compression.CompressionLevel;
+
 
 public class GameSettingsEditor : EditorWindow
 {
@@ -119,6 +122,12 @@ public class GameSettingsEditor : EditorWindow
         if (GUILayout.Button("Move InfoGame to Build Folder"))
         {
             MoveInfoGameToBuildFolder();
+        }
+        
+        GUILayout.Space(5);
+        if (GUILayout.Button("Zip Build Folder"))
+        {
+            ZipBuildFolder();
         }
 
         if (GUILayout.Button("Open iOS Build Folder"))
@@ -295,6 +304,38 @@ public class GameSettingsEditor : EditorWindow
         {
             Debug.LogError("Error copying the folder: " + e.Message);
         }
+    }
+    
+    private void ZipBuildFolder()
+    {
+        string buildPath = Path.Combine(Directory.GetParent(Application.dataPath).FullName, $"{gameName}_iOS");
+        string zipPath = buildPath + ".zip";
+
+        if (!Directory.Exists(buildPath))
+        {
+            Debug.LogError("Build folder does not exist. Please build the game first.");
+            return;
+        }
+
+        if (File.Exists(zipPath))
+        {
+            File.Delete(zipPath); // Xóa file zip cũ nếu có
+        }
+
+        // Tạo file ZIP với mức nén tối ưu (giảm dung lượng)
+        using (FileStream zipToOpen = new FileStream(zipPath, FileMode.Create))
+        {
+            using (ZipArchive archive = new ZipArchive(zipToOpen, ZipArchiveMode.Create, true))
+            {
+                foreach (string file in Directory.GetFiles(buildPath, "*", SearchOption.AllDirectories))
+                {
+                    string relativePath = file.Substring(buildPath.Length + 1); // Lấy đường dẫn tương đối
+                    ZipArchiveEntry entry = archive.CreateEntryFromFile(file, relativePath, CompressionLevel.Fastest);
+                }
+            }
+        }
+
+        Debug.Log("Build folder zipped with optimal compression: " + zipPath);
     }
 
     private void DirectoryCopy(string sourceDir, string destDir)
