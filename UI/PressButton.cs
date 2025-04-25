@@ -2,27 +2,28 @@ using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Serialization;
 
 public class PressButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
-    public static bool isPress;
-    public static bool isDown;
+    public bool IsPressed;
+    public bool isDown;
 
     private void OnEnable()
     {
-        isPress = false;
+        IsPressed = false;
         isDown = false;
     }
 
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        if (!isPress)
+        if (!IsPressed)
         {
             isDown = true;
         }
 
-        isPress = true;
+        IsPressed = true;
         StartCoroutine(ResetDown());
     }
 
@@ -34,7 +35,7 @@ public class PressButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
     public void OnPointerUp(PointerEventData eventData)
     {
-        isPress = false;
+        IsPressed = false;
         isDown = false;
     }
 }
