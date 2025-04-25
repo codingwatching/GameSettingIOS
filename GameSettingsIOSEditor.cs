@@ -7,8 +7,7 @@ using UnityEditor.Build;
 using System.IO.Compression;
 using CompressionLevel = System.IO.Compression.CompressionLevel;
 
-
-public class GameSettingsEditor : EditorWindow
+public class GameSettingsIOSEditor : EditorWindow
 {
     private Texture2D gameIcon;
     private string companyName = "";
@@ -31,10 +30,10 @@ public class GameSettingsEditor : EditorWindow
     private const string manifestPath = "Packages/manifest.json";
 
 
-    [MenuItem("Tools/Game Settings")]
+    [MenuItem("Tools/Game Settings IOS")]
     public static void ShowWindow()
     {
-        GetWindow<GameSettingsEditor>("Game Settings");
+        GetWindow<GameSettingsIOSEditor>("Game Settings");
     }
 
     private void OnEnable()
@@ -50,7 +49,7 @@ public class GameSettingsEditor : EditorWindow
 
     private void OnGUI()
     {
-        GUILayout.Label("Game Settings", EditorStyles.boldLabel);
+        GUILayout.Label("Game Settings IOS", EditorStyles.boldLabel);
         if(GUILayout.Button("Create Folder And File"))  CreateFolderAndFile();
         if(GUILayout.Button("Get Info")) GetInfoGame();
         if(GUILayout.Button("Open Player Settings")) OpenPlayerSettings();
