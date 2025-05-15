@@ -42,6 +42,39 @@ public class GameSettingAndroidEditor : EditorWindow
         // Icon selection
         GUILayout.Label("Game Icon:");
         gameIcon = (Texture2D)EditorGUILayout.ObjectField(gameIcon, typeof(Texture2D), false);
+        if (GUILayout.Button("Clone and Resize Icon (512 & 144)"))
+        {
+            if (gameIcon != null)
+            {
+
+                string path = AssetDatabase.GetAssetPath(gameIcon);
+                string dir = Path.GetDirectoryName(path);
+
+                TextureImporter importer = AssetImporter.GetAtPath(path) as TextureImporter;
+                if (importer != null)
+                {
+                    importer.isReadable = true;
+                    importer.textureCompression = TextureImporterCompression.Uncompressed;
+                    importer.filterMode = FilterMode.Point; // hoặc Bilinear
+                    importer.SaveAndReimport();
+                }
+                
+                // Resize and save 512x512
+                Texture2D icon512 = ResizeTexturePixelPerfect(gameIcon, 512, 512);
+                SaveTextureAsPNG(icon512, Path.Combine(dir, "icon_512x512.png"));
+
+                // Resize and save 144x144
+                Texture2D icon144 = ResizeTexturePixelPerfect(gameIcon, 144, 144);
+                SaveTextureAsPNG(icon144, Path.Combine(dir, "icon_144x144.png"));
+
+                AssetDatabase.Refresh();
+                Debug.Log("Icons resized and saved.");
+            }
+            else
+            {
+                Debug.LogWarning("Please select a texture.");
+            }
+        }
 
         // Company Name input
         GUILayout.Label("Company Name:");
@@ -102,6 +135,35 @@ public class GameSettingAndroidEditor : EditorWindow
         {
             OpenPathBuild();
         }
+    }
+    
+    private Texture2D ResizeTexturePixelPerfect(Texture2D source, int width, int height)
+    {
+        Texture2D result = new Texture2D(width, height, TextureFormat.RGBA32, false);
+
+        Color[] pixels = new Color[width * height];
+        float ratioX = (float)source.width / width;
+        float ratioY = (float)source.height / height;
+
+        for (int y = 0; y < height; y++)
+        {
+            for (int x = 0; x < width; x++)
+            {
+                int srcX = Mathf.FloorToInt(x * ratioX);
+                int srcY = Mathf.FloorToInt(y * ratioY);
+                pixels[y * width + x] = source.GetPixel(srcX, srcY);
+            }
+        }
+
+        result.SetPixels(pixels);
+        result.Apply();
+        return result;
+    }
+    private void SaveTextureAsPNG(Texture2D texture, string path)
+    {
+        byte[] bytes = texture.EncodeToPNG();
+        File.WriteAllBytes(path, bytes);
+        Debug.Log("Saved: " + path);
     }
     
     private void GetInfoGame()
