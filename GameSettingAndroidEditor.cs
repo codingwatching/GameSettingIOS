@@ -64,8 +64,8 @@ public class GameSettingAndroidEditor : EditorWindow
                 SaveTextureAsPNG(icon512, Path.Combine(dir, "icon_512x512.png"));
 
                 // Resize and save 144x144
-                Texture2D icon144 = ResizeTexturePixelPerfect(gameIcon, 144, 144);
-                SaveTextureAsPNG(icon144, Path.Combine(dir, "icon_144x144.png"));
+                Texture2D icon114 = ResizeTexturePixelPerfect(gameIcon, 114, 114);
+                SaveTextureAsPNG(icon114, Path.Combine(dir, "icon_114x114.png"));
 
                 AssetDatabase.Refresh();
                 Debug.Log("Icons resized and saved.");
@@ -75,7 +75,8 @@ public class GameSettingAndroidEditor : EditorWindow
                 Debug.LogWarning("Please select a texture.");
             }
         }
-
+ 
+        
         // Company Name input
         GUILayout.Label("Company Name:");
         companyName = EditorGUILayout.TextField(companyName);

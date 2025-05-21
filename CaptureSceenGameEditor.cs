@@ -16,14 +16,21 @@ public class CaptureSceenGameEditor : Editor
     public override void OnInspectorGUI()
     {
         DrawDefaultInspector();
-        if (GUILayout.Button("Capture Icon"))
+        if (GUILayout.Button("Capture Icon 512x512"))
         {
             _captureSceenGame.CaptureIcon();
         }
+        
+        if (GUILayout.Button("Capture Icon 1280x720"))
+        {
+            _captureSceenGame.CaptureIcon1280x720();
+        }
+        
         if (GUILayout.Button("Capture Single"))
         {
             _captureSceenGame.CapScreen();
         }
+        
         
         if (GUILayout.Button("Capture Double"))
         {

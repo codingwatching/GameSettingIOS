@@ -13,12 +13,22 @@ public class CaptureSceenGame : MonoBehaviour
     [ContextMenu("CaptureIcon")]
     public void CaptureIcon()
     {
+        string folderPath = "Assets/InfoGame/"; 
+        if (!System.IO.Directory.Exists(folderPath)) 
+            System.IO.Directory.CreateDirectory(folderPath);
+        CaptureScreenshot(folderPath, "Icon_512", 512, 512);
+    }
+     
+    [ContextMenu("CaptureIcon1280x720")]
+    public void CaptureIcon1280x720()
+    {
         string folderPath = "Assets/InfoGame/"; // the path of your project folder
 
         if (!System.IO.Directory.Exists(folderPath)) // if this path does not exist yet
             System.IO.Directory.CreateDirectory(folderPath); // it will get created
-        CaptureScreenshot(folderPath, "Icon_512", 512, 512);
+        CaptureScreenshot(folderPath, "Icon_1280x720", 1280, 720);
     }
+    
 
     [ContextMenu("Capture Single")]
     public void CapScreen()
@@ -33,8 +43,7 @@ public class CaptureSceenGame : MonoBehaviour
             System.DateTime.Now.ToString(
                 "dd-MM-yyyy-HH-mm-ss") + // puts the current time right into the screenshot name
             ".png"; // put youre favorite data format here
-        ScreenCapture.CaptureScreenshot(System.IO.Path.Combine(folderPath, screenshotName),
-            1); // takes the sceenshot, the "2" is for the scaled resolution, you can put this to 600 but it will take really long to scale the image up
+        ScreenCapture.CaptureScreenshot(System.IO.Path.Combine(folderPath, screenshotName), 1);
         AssetDatabase.Refresh();
         Debug.Log("Capture Screenshot Name " + screenshotName);
     }
@@ -67,15 +76,13 @@ public class CaptureSceenGame : MonoBehaviour
         if (isCapturePortrait)
         {
             CaptureScreenshot(folderPath, "Portrait", 1242, 2688);
-            yield return new WaitForEndOfFrame();
+            yield return new WaitForSeconds(0.2f);
             CaptureScreenshot(folderPath, "Portrait", 1242, 2208);
-            yield return new WaitForEndOfFrame();
         }
         else
         {
-            yield return new WaitForEndOfFrame();
             CaptureScreenshot(folderPath, "Landscape", 2688, 1242);
-            yield return new WaitForEndOfFrame();
+            yield return new WaitForSeconds(0.2f);
             CaptureScreenshot(folderPath, "Landscape", 2208, 1242);
         }
     }
@@ -99,7 +106,7 @@ public class CaptureSceenGame : MonoBehaviour
 
         var screenshotName =
             resolutionName + "_" +
-            System.DateTime.Now.ToString("dd-MM-yyyy-HH-mm-ss") +
+            System.DateTime.Now.ToString("ss") +
             ".png";
 
         var screenshotPath = System.IO.Path.Combine(folderPath, screenshotName);
