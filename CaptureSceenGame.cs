@@ -58,7 +58,7 @@ public class CaptureSceenGame : MonoBehaviour
             System.IO.Directory.CreateDirectory(folderPath); // it will get created
 
 #if UNITY_IOS
-        StartCoroutine(IECaptureScreenshot(folderPath));
+        IECaptureScreenshot(folderPath);
 #else
         if (isCapturePortrait)
         {
@@ -71,18 +71,16 @@ public class CaptureSceenGame : MonoBehaviour
 #endif
     }
 
-    private IEnumerator IECaptureScreenshot(string folderPath)
+    private void IECaptureScreenshot(string folderPath)
     {
         if (isCapturePortrait)
         {
             CaptureScreenshot(folderPath, "Portrait", 1242, 2688);
-            yield return new WaitForSeconds(0.2f);
             CaptureScreenshot(folderPath, "Portrait", 1242, 2208);
         }
         else
         {
             CaptureScreenshot(folderPath, "Landscape", 2688, 1242);
-            yield return new WaitForSeconds(0.2f);
             CaptureScreenshot(folderPath, "Landscape", 2208, 1242);
         }
     }
