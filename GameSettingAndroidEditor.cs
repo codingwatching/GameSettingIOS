@@ -120,6 +120,10 @@ public class GameSettingAndroidEditor : EditorWindow
             EditorUserBuildSettings.SwitchActiveBuildTarget(BuildTargetGroup.Android, BuildTarget.Android);
         }
         GUILayout.Space(5);
+        if (GUILayout.Button("Gen KeyStore"))
+        {
+            Tool_SetupAndroid.SetKeystoreAndAlias();
+        }
         if (GUILayout.Button("Build APK"))
         {
             BuildAPK();
@@ -303,6 +307,8 @@ public class GameSettingAndroidEditor : EditorWindow
             Debug.LogError("APK Build failed.");
         }
     }
+    
+   
 
     private void OpenPathBuild()
     {
