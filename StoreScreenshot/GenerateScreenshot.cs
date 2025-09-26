@@ -1,6 +1,5 @@
 ﻿#if UNITY_EDITOR
 using UnityEngine;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -55,7 +54,6 @@ public class GenerateScreenshot : MonoBehaviour
 
                 yield return new WaitForEndOfFrame();
                 yield return new WaitForEndOfFrame();
-                yield return new WaitForEndOfFrame();
 
                 SaveScreenshot(resolutions[i].resName);
                 StoreScreenshotUtils.RemoveCustomSize(resolutions[i].width, resolutions[i].height,
@@ -72,6 +70,7 @@ public class GenerateScreenshot : MonoBehaviour
 
         Debug.Log("All screenshot saved in \"Project Folder > Screenshot > Name\"!");
         Time.timeScale = defaultTimeScale;
+        StoreScreenshotUtils.RestoreOriginalResolution();
 
         Destroy(gameObject);
     }

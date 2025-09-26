@@ -1,15 +1,11 @@
 ﻿using UnityEngine;
 using UnityEditor;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 
 
 public class StoreScreenshot : EditorWindow
 {
-    private Vector2 scrollPosition;
-    private int rowNum;
-
     private static string separator = "\\-/";
     private static int numberOfResolutions;
     private static bool hideUGUICanvases, savedHideUGUICanvases;
@@ -26,6 +22,7 @@ public class StoreScreenshot : EditorWindow
     static void Init()
     {
         ReadValues();
+        StoreScreenshotUtils.StoreOriginalResolutionIndex();
 
         StoreScreenshot window = (StoreScreenshot)EditorWindow.GetWindow(typeof(StoreScreenshot));
         resolutions.Clear();
@@ -78,10 +75,12 @@ public class StoreScreenshot : EditorWindow
         window.Show();
     }
 
+
     [MenuItem("Tools/Store Screenshot/Capture %&s")]
     static void SaveScreenshot()
     {
         ReadValues();
+        StoreScreenshotUtils.StoreOriginalResolutionIndex();
 
         Debug.Log("Saving screenshot...");
         if (EditorApplication.isPlaying)

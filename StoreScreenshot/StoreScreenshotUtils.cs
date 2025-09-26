@@ -27,6 +27,7 @@ public static class StoreScreenshotUtils
 	static Type gameViewSize = typeof(Editor).Assembly.GetType("UnityEditor.GameViewSize");
 	static Type gameViewSizes = typeof(Editor).Assembly.GetType("UnityEditor.ScriptableSingleton`1").MakeGenericType(typeof(Editor).Assembly.GetType("UnityEditor.GameViewSizes"));
 	static BindingFlags bindingFlags = BindingFlags.Public | BindingFlags.Instance;
+	static int originalGameViewResolutionIndex;
 
 	private static GameViewSize _gameViewSize;
 
@@ -142,13 +143,34 @@ public static class StoreScreenshotUtils
 				break;
 			}
 		}
+
 		if (index != -1)
 		{
-			PropertyInfo selectedSizeIndex = typeof(Editor).Assembly.GetType("UnityEditor.GameView").GetProperty("selectedSizeIndex", BindingFlags.Instance | BindingFlags.NonPublic);
+#if UNITY_2022_1_OR_NEWER
+			BindingFlags flags = BindingFlags.Instance | BindingFlags.Public;
+#else
+			BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
+#endif
+
+			PropertyInfo selectedSizeIndex = typeof(Editor).Assembly.GetType("UnityEditor.GameView").GetProperty("selectedSizeIndex", flags);
 			selectedSizeIndex.SetValue(gameView, index, null);
 		}
 	}
 
+	public static void StoreOriginalResolutionIndex()
+	{
+		PropertyInfo selectedSizeIndex = typeof(Editor).Assembly.GetType("UnityEditor.GameView").GetProperty("selectedSizeIndex", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+		EditorWindow gameView = EditorWindow.GetWindow(typeof(Editor).Assembly.GetType("UnityEditor.GameView"));
+
+		originalGameViewResolutionIndex = (int)selectedSizeIndex.GetValue(gameView, null);
+	}
+	public static void RestoreOriginalResolution()
+	{
+		PropertyInfo selectedSizeIndex = typeof(Editor).Assembly.GetType("UnityEditor.GameView").GetProperty("selectedSizeIndex", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+		EditorWindow gameView = EditorWindow.GetWindow(typeof(Editor).Assembly.GetType("UnityEditor.GameView"));
+
+		selectedSizeIndex.SetValue(gameView, originalGameViewResolutionIndex, null);
+	}
 
 
 	static bool Remove(object instance_gameViewSizeGroup)
